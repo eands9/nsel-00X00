@@ -29,6 +29,7 @@ class ViewController: UIViewController {
     var answerCorrect : Int = 0
     var answerUser : Int = 0
     var isShow: Bool = false
+    var questionNumber = 0
     
     let congratulateArray = ["Great Job", "Excellent", "Way to go", "Alright", "Right on", "Correct", "Well done", "Awesome","Give me a high five"]
     let retryArray = ["Try again","Oooops"]
@@ -49,11 +50,17 @@ class ViewController: UIViewController {
     }
     
     func askQuestion(){
+        if questionNumber == 5{
+            stopTimer()
+            timer.invalidate()
+        }
+        
         randomNumA = Int.random(in: 11 ..< 100)
         randomNumB = Int.random(in: 6 ..< 100)
 
         questionLabel.text = "\(randomNumA) X \(randomNumB)"
         answerCorrect = randomNumA * randomNumB
+        questionNumber += 1
     }
     
     @IBAction func showBtn(_ sender: Any) {
@@ -114,6 +121,9 @@ class ViewController: UIViewController {
     func randomTryAgain(){
         randomPick = Int(arc4random_uniform(2))
         readMe(myText: retryArray[randomPick])
+    }
+    func stopTimer(){
+        timer.invalidate()
     }
 }
 
