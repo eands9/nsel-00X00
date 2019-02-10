@@ -49,17 +49,26 @@ class ViewController: UIViewController {
         checkAnswer()
     }
     func askQuestion(){
-        if questionNumber == 1{
+        if questionNumber == 5{
             averageSecond = Int(counter)/questionNumber
             questionLabel.text = "Your average time is \(averageSecond) seconds."
-            readMe(myText: "Your average time is \(averageSecond) seconds.")
-            
             stopTimer()
             timer.invalidate()
+            if averageSecond >= 8 {
+                let when = DispatchTime.now() + 2
+                DispatchQueue.main.asyncAfter(deadline: when){
+                    self.readMe(myText: "You have to start over again until your average time is less than 8 seconds.")
+                    self.startOver()
+                }
+            } else {
+                let when = DispatchTime.now() + 2
+                DispatchQueue.main.asyncAfter(deadline: when){
+                    self.readMe(myText: "Congratulations! Your average time is \(self.averageSecond) seconds.")
+                }
+            }
         } else {
             randomNumA = Int.random(in: 11 ..< 100)
             randomNumB = Int.random(in: 6 ..< 100)
-
             questionLabel.text = "\(randomNumA) X \(randomNumB)"
             answerCorrect = randomNumA * randomNumB
             questionNumber += 1
@@ -120,6 +129,18 @@ class ViewController: UIViewController {
     }
     func stopTimer(){
         timer.invalidate()
+    }
+    func startOver(){
+        counter = 0
+        correctAnswers = 0
+        numberAttempts = 0
+        questionNumber = 0
+        askQuestion()
+        
+        timerLbl.text = "\(counter)"
+        timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(ViewController.updateTimer), userInfo: nil, repeats: true)
+        
+        self.answerTxt.becomeFirstResponder()
     }
 }
 
