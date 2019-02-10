@@ -45,11 +45,9 @@ class ViewController: UIViewController {
         
         self.answerTxt.becomeFirstResponder()
     }
-
     @IBAction func checkAnswerByUser(_ sender: Any) {
         checkAnswer()
     }
-    
     func askQuestion(){
         if questionNumber == 1{
             averageSecond = Int(counter)/questionNumber
@@ -59,7 +57,6 @@ class ViewController: UIViewController {
             stopTimer()
             timer.invalidate()
         } else {
-        
             randomNumA = Int.random(in: 11 ..< 100)
             randomNumB = Int.random(in: 6 ..< 100)
 
