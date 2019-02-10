@@ -30,6 +30,7 @@ class ViewController: UIViewController {
     var answerUser : Int = 0
     var isShow: Bool = false
     var questionNumber = 0
+    var averageSecond = 0
     
     let congratulateArray = ["Great Job", "Excellent", "Way to go", "Alright", "Right on", "Correct", "Well done", "Awesome","Give me a high five"]
     let retryArray = ["Try again","Oooops"]
@@ -50,24 +51,27 @@ class ViewController: UIViewController {
     }
     
     func askQuestion(){
-        if questionNumber == 5{
+        if questionNumber == 1{
+            averageSecond = Int(counter)/questionNumber
+            questionLabel.text = "Your average time is \(averageSecond) seconds."
+            readMe(myText: "Your average time is \(averageSecond) seconds.")
+            
             stopTimer()
             timer.invalidate()
-        }
+        } else {
         
-        randomNumA = Int.random(in: 11 ..< 100)
-        randomNumB = Int.random(in: 6 ..< 100)
+            randomNumA = Int.random(in: 11 ..< 100)
+            randomNumB = Int.random(in: 6 ..< 100)
 
-        questionLabel.text = "\(randomNumA) X \(randomNumB)"
-        answerCorrect = randomNumA * randomNumB
-        questionNumber += 1
+            questionLabel.text = "\(randomNumA) X \(randomNumB)"
+            answerCorrect = randomNumA * randomNumB
+            questionNumber += 1
+        }
     }
-    
     @IBAction func showBtn(_ sender: Any) {
         answerTxt.text = String(answerCorrect)
         isShow = true
     }
-    
     func checkAnswer(){
         answerUser = (answerTxt.text! as NSString).integerValue
         
@@ -80,7 +84,7 @@ class ViewController: UIViewController {
             answerTxt.text = ""
         }
         else if isShow == true {
-            readMe(myText: "Next Question")
+            readMe(myText: "Onto the next question")
             askQuestion()
             isShow = false
             answerTxt.text = ""
@@ -94,12 +98,10 @@ class ViewController: UIViewController {
             updateProgress()
         }
     }
-    
     @objc func updateTimer(){
         counter += 0.1
         timerLbl.text = String(format:"%.1f",counter)
     }
-    
     func readMe( myText: String) {
         let utterance = AVSpeechUtterance(string: myText )
         utterance.voice = AVSpeechSynthesisVoice(language: "en-US")
@@ -108,16 +110,13 @@ class ViewController: UIViewController {
         let synthesizer = AVSpeechSynthesizer()
         synthesizer.speak(utterance)
     }
-    
     func randomPositiveFeedback(){
         randomPick = Int(arc4random_uniform(9))
         readMe(myText: congratulateArray[randomPick])
     }
-    
     func updateProgress(){
         progressLbl.text = "\(correctAnswers) / \(numberAttempts)"
     }
-    
     func randomTryAgain(){
         randomPick = Int(arc4random_uniform(2))
         readMe(myText: retryArray[randomPick])
