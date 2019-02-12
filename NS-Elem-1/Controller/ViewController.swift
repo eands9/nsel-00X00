@@ -55,11 +55,12 @@ class ViewController: UIViewController {
             stopTimer()
             timer.invalidate()
             if averageSecond >= 8 {
-                let when = DispatchTime.now() + 2
-                DispatchQueue.main.asyncAfter(deadline: when){
-                    self.readMe(myText: "You have to start over again until your average time is less than 8 seconds.")
+                let alert = UIAlertController(title: "Redo!", message: "You did not finish in less than 8 seconds!", preferredStyle: .alert)
+                let restartAction = UIAlertAction(title: "Start Over", style: .default) { (handler) in
                     self.startOver()
                 }
+                alert.addAction(restartAction)
+                present(alert, animated: true, completion: nil)
             } else {
                 let when = DispatchTime.now() + 2
                 DispatchQueue.main.asyncAfter(deadline: when){
