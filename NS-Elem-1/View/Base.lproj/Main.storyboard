@@ -10,6 +10,62 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
+        <!--Login View Controller-->
+        <scene sceneID="G7r-Ko-SCm">
+            <objects>
+                <viewController id="3ff-v6-cSk" customClass="LoginViewController" customModule="nsel_00X00" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="tqm-9T-R7Z">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Type username" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="XLj-Fw-MhU">
+                                <rect key="frame" x="97.5" y="102" width="180" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="180" id="SbD-sS-HPa"/>
+                                    <constraint firstAttribute="height" constant="30" id="i4R-oF-Cau"/>
+                                </constraints>
+                                <nil key="textColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="KLp-z3-93H">
+                                <rect key="frame" x="97.5" y="183" width="180" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="180" id="6SG-zR-niY"/>
+                                    <constraint firstAttribute="height" constant="30" id="Qke-kQ-oBz"/>
+                                </constraints>
+                                <nil key="textColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" secureTextEntry="YES" textContentType="password"/>
+                            </textField>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cKN-OE-pFq">
+                                <rect key="frame" x="117.5" y="253" width="140" height="40"/>
+                                <color key="backgroundColor" red="0.0" green="0.97680455450000003" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="140" id="DX9-lA-ZFI"/>
+                                    <constraint firstAttribute="height" constant="40" id="ESa-Gn-1zB"/>
+                                </constraints>
+                                <state key="normal" title="Login">
+                                    <color key="titleColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" red="0.066653046335720889" green="0.25122072976886578" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="XLj-Fw-MhU" firstAttribute="top" secondItem="lX2-gW-kKj" secondAttribute="top" constant="82" id="74l-Bw-RdT"/>
+                            <constraint firstItem="cKN-OE-pFq" firstAttribute="top" secondItem="KLp-z3-93H" secondAttribute="bottom" constant="40" id="BzR-Wf-SCb"/>
+                            <constraint firstItem="KLp-z3-93H" firstAttribute="centerX" secondItem="tqm-9T-R7Z" secondAttribute="centerX" id="LAp-jT-M6y"/>
+                            <constraint firstItem="KLp-z3-93H" firstAttribute="top" secondItem="XLj-Fw-MhU" secondAttribute="bottom" constant="51" id="c6z-yD-yWf"/>
+                            <constraint firstItem="XLj-Fw-MhU" firstAttribute="centerX" secondItem="tqm-9T-R7Z" secondAttribute="centerX" id="msK-IP-OBO"/>
+                            <constraint firstItem="cKN-OE-pFq" firstAttribute="centerX" secondItem="tqm-9T-R7Z" secondAttribute="centerX" id="reP-sC-0ZP"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="lX2-gW-kKj"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="oZo-OA-8ap" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1388" y="-48"/>
+        </scene>
         <!--View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
@@ -119,7 +175,7 @@
                                         </constraints>
                                     </view>
                                 </subviews>
-                                <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="backgroundColor" red="0.016804177310000001" green="0.19835099580000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstItem="M1Z-y1-xS5" firstAttribute="top" secondItem="cC5-0f-2HT" secondAttribute="top" constant="55.5" id="moR-aF-xCA"/>
                                     <constraint firstItem="M1Z-y1-xS5" firstAttribute="centerX" secondItem="cC5-0f-2HT" secondAttribute="centerX" id="zpk-Si-W0K"/>
@@ -144,7 +200,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="131.78410794602701" y="132"/>
+            <point key="canvasLocation" x="113" y="139"/>
         </scene>
     </scenes>
 </document>
