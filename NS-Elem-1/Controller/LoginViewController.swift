@@ -13,12 +13,31 @@ import SVProgressHUD
 class LoginViewController: UIViewController {
     @IBOutlet weak var userNameTxt: UITextField!
     @IBOutlet weak var passwordTxt: UITextField!
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
     }
+    
+    @IBAction func loginBtn(_ sender: Any) {
+        SVProgressHUD.show()
+        
+        Auth.auth().signIn(withEmail: userNameTxt.text!, password: passwordTxt.text!) { (user, error) in
+
+            if error != nil {
+                print(error!)
+                print(error!._code)
+                SVProgressHUD.dismiss()
+            } else {
+                SVProgressHUD.dismiss()
+                self.performSegue(withIdentifier: "goToApp", sender: self)
+            }
+
+        }
+    }
+    
     
 
     /*

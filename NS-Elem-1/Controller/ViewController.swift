@@ -8,6 +8,7 @@
 
 import UIKit
 import Speech
+import Firebase
 
 class ViewController: UIViewController {
     @IBOutlet weak var questionLbl: UILabel!
@@ -31,13 +32,20 @@ class ViewController: UIViewController {
     var isShow: Bool = false
     var questionNumber = 0
     var averageSecond = 0
+    var currentAvgTime = 0
+    var modUserName3 = ""
+    var timerTouch = Timer()
+    let category = "1C1"
+    var counterTouch = 0.0
+    let getBackToWorkArray = ["You know what your dad wants to hear!","Your dad is waiting!","Don't get penalize","Life is a race","Who is winning the race?","Guess what Lucas and Tony are doing?","I will tell your dad","Remember the story of the Turtle and Rabbit","Don't forget to love yourself"]
     
     let congratulateArray = ["Great Job", "Excellent", "Way to go", "Alright", "Right on", "Correct", "Well done", "Awesome","Give me a high five"]
     let retryArray = ["Try again","Oooops"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        getUserName()
+        setImproperlyClosedToN()
         askQuestion()
         
         timerLbl.text = "\(counter)"
@@ -48,31 +56,113 @@ class ViewController: UIViewController {
     @IBAction func checkAnswerByUser(_ sender: Any) {
         checkAnswer()
     }
+    func getUserName(){
+        
+        let userName = Auth.auth().currentUser?.email as! String
+        let modUserName1 = userName.replacingOccurrences(of: "@", with: "")
+        let modUsername2 = modUserName1.replacingOccurrences(of: ".", with: "")
+        modUserName3 = modUsername2
+    }
     func askQuestion(){
-        if questionNumber == 5{
-            averageSecond = Int(counter)/questionNumber
-            questionLabel.text = "Your average time is \(averageSecond) seconds."
-            stopTimer()
+        //TODO: Stop the timer when the user is done with the 5th question.
+        
+        if correctAnswers == 5{
+            averageSecond = Int(counter)/correctAnswers
             timer.invalidate()
-            if averageSecond >= 8 {
-                let alert = UIAlertController(title: "Redo!", message: "You did not finish in less than 8 seconds!", preferredStyle: .alert)
-                let restartAction = UIAlertAction(title: "Start Over", style: .default) { (handler) in
-                    self.startOver()
-                }
-                alert.addAction(restartAction)
-                present(alert, animated: true, completion: nil)
-            } else {
-                let when = DispatchTime.now() + 2
-                DispatchQueue.main.asyncAfter(deadline: when){
-                    self.readMe(myText: "Congratulations! Your average time is \(self.averageSecond) seconds.")
-                }
-            }
+            timerTouch.invalidate()
+            stopTimer()
+            compareTime()
+            
         } else {
             randomNumA = Int.random(in: 11 ..< 100)
             randomNumB = Int.random(in: 6 ..< 100)
             questionLabel.text = "\(randomNumA) X \(randomNumB)"
             answerCorrect = randomNumA * randomNumB
             questionNumber += 1
+            startTimerTouch()
+        }
+    }
+    func failed(){
+        let alert = UIAlertController(title: "Redo!", message: "You could do better... try again!", preferredStyle: .alert)
+        let restartAction = UIAlertAction(title: "Start Over", style: .default) { (handler) in
+            self.startOver()
+        }
+        alert.addAction(restartAction)
+        present(alert, animated: true, completion: nil)
+    }
+    func breakNewRecord(){
+        let alert = UIAlertController(title: "Want to beat your new record!", message: "Come on... you can do it!", preferredStyle: .alert)
+        let restartAction = UIAlertAction(title: "Break My New Record", style: .default) { (handler) in
+            self.startOver()
+        }
+        alert.addAction(restartAction)
+        present(alert, animated: true, completion: nil)
+    }
+    func compareTime(){
+        //Get Previous Record
+        let refPrevRec = Database.database().reference().child("Users").child(modUserName3).child(category).child("AvgTime")
+        refPrevRec.observeSingleEvent(of: .value, with: {(snapshot) in
+            self.currentAvgTime = (snapshot.value as? Int)!
+            // Compare New Time with Previous Record Time
+            if self.averageSecond >= self.currentAvgTime{
+                self.questionLabel.text = "Nope! Your time of \(self.averageSecond) needs to be less than your record of \(self.currentAvgTime)."
+                self.readMe(myText: "Redo!")
+                self.failed()
+            } else {
+                self.updateDB()
+                self.questionLabel.text = "Yes! Your time of \(self.averageSecond) is better than your record of \(self.currentAvgTime)."
+                self.readMe(myText: "Record broken!")
+                self.breakNewRecord()
+            }
+        })
+        { (error) in
+            print(error.localizedDescription)
+        }
+    }
+    func updateDB(){
+        let refUserNameDB = Database.database().reference().child("Users").child(modUserName3).child(category)
+        refUserNameDB.setValue(["AvgTime": averageSecond, "Date": getCurrentShortDate()]){
+            (error,reference) in
+            if error != nil{
+                print(error!)
+            } else {
+                print("Message saved successfully!")
+                
+            }
+        }
+    }
+    func startTimerTouch(){
+        counterTouch = 0
+        //userNameTxt.text = "\(counter)"
+        timerTouch = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(ViewController.updateTimerTouch), userInfo: nil, repeats: true)
+    }
+    func stopTimerTouch(){
+        timerTouch.invalidate()
+    }
+    @objc func updateTimerTouch(){
+        counterTouch += 1
+        if counterTouch == 20{
+            randomBackToWork()
+            counterTouch = 0
+        }
+        
+    }
+    func randomBackToWork(){
+        let randomPickWork = Int(arc4random_uniform(8))
+        readMe(myText: getBackToWorkArray[randomPickWork])
+    }
+    func setImproperlyClosedToN(){
+        let improperlyClosedDB = Database.database().reference().child("Users").child(modUserName3)
+        
+        improperlyClosedDB.updateChildValues(["ImproperlyClosed": "N"]){
+            (error,reference) in
+            if error != nil{
+                print(error!)
+            } else {
+                print("Message saved successfully!")
+                
+            }
+            
         }
     }
     @IBAction func showBtn(_ sender: Any) {
@@ -80,6 +170,7 @@ class ViewController: UIViewController {
         isShow = true
     }
     func checkAnswer(){
+        stopTimerTouch()
         answerUser = (answerTxt.text! as NSString).integerValue
         
         if answerUser == answerCorrect && isShow == false {
@@ -91,7 +182,7 @@ class ViewController: UIViewController {
             answerTxt.text = ""
         }
         else if isShow == true {
-            readMe(myText: "Onto the next question")
+            readMe(myText: "Next Question")
             askQuestion()
             isShow = false
             answerTxt.text = ""
@@ -143,5 +234,33 @@ class ViewController: UIViewController {
         
         self.answerTxt.becomeFirstResponder()
     }
+    func updateAvgTime(){
+        let category = "1C1"
+        let userName = Auth.auth().currentUser?.email as! String
+        let modUserName1 = userName.replacingOccurrences(of: "@", with: "")
+        let modUsername2 = modUserName1.replacingOccurrences(of: ".", with: "")
+        let refUserNameDB = Database.database().reference().child("Users").child(modUsername2).child(category)
+        
+        
+        refUserNameDB.setValue(["AvgTime": averageSecond, "Date": getCurrentShortDate()]){
+            (error,reference) in
+            if error != nil{
+                print(error!)
+            } else {
+                print("Message saved successfully!")
+                
+            }
+        }
+    }
+    
+    func getCurrentShortDate() -> String {
+        let todaysDate = Date()
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let DateInFormat = dateFormatter.string(from: todaysDate)
+        
+        return DateInFormat
+    }
 }
+
 
